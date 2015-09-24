@@ -1,0 +1,60 @@
+<head>
+    <title>Online Data</title>
+
+    <!-- Load jquery.js -->
+    <script src="/static/jquery.js"></script>
+    <!-- Load c3.css -->
+    <link href="/static/c3.css" rel="stylesheet" type="text/css">
+    <!-- Load d3.js and c3.js -->
+    <script src="/static/d3.js" charset="utf-8"></script>
+    <script src="/static/c3.js"></script>
+</head>
+
+<body>
+    <h1> Data representation example</h1>
+    <!-- Preparing a div where C3.js will work -->
+    <div id="dataChart"></div>
+</body>
+
+<script>
+    $(document).ready(function(){
+
+        //Generating a new chart
+        var chart = c3.generate({
+            //Putting it in our div
+            bindto: '#dataChart',
+            transition: {
+                duration: 0
+            },
+            //Axis, data and formats
+            data: {
+                x: 'timestamp',
+                xFormat: '%H:%M:%S.%L', // 'xFormat' can be used as custom format of 'x'
+                columns: [
+                    ['timestamp'],
+                    ['Period'],
+                    ['Frequency'],
+                    ['Pulses']
+                ]
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%H:%M:%S.%L'
+                    }
+                }
+            }
+        });
+
+        //Schedule a job every 100ms where the jQuery GET command is executed
+        setInterval(function () {
+            //Recover the JSON information of the last 100 samples and reload
+            //the chart with them
+            $.get( "chartData/100", function( data ) {
+                chart.load( data );
+            });
+        },100);
+    });
+
+</script>
