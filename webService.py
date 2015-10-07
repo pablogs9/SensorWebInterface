@@ -4,8 +4,8 @@
 ### pages answer and the REST service for the AJAX info recovery    ###
 #######################################################################
 
-import dataset
-from flask import Flask, render_template, jsonify
+import dataset, csv
+from flask import Flask, render_template, jsonify, Response
 
 # Create an Flask App
 app = Flask(__name__)
@@ -42,6 +42,27 @@ def chartData(entries):
 
     # Return the result with JSON format
     return jsonify(columns=[timestamp,Period,Frequency,Pulses])
+
+# Create a link to get all data in CSV format
+@app.route("/csvData")
+def csvData():
+    # Init the data vectors
+    timestamp = ['timestamp']
+    Period = ['Period']
+    Frequency = ['Frequency']
+    Pulses = ['Pulses']
+
+    csvString = "timestamp,Period,Frequency,Pulses\n"
+
+    # Query the database with a SQL sentence: get all entries from data table
+    # and order them by the timestap
+    result = db.query('''SELECT * FROM data ORDER BY strftime('%Y-%m-%d %H%M:%f',timestamp) DESC ;''')
+    for row in result:
+        # Add the info to the csvString
+        csvString += str(row['timestamp'][11:]) + "," + str(row['Period']) + "," + str(row['Frequency']) + "," + str(row['Pulses']) + "\n"
+
+    # Return the result with CSV format
+    return Response(csvString,mimetype='text/csv')
 
 if __name__ == "__main__":
     # Run the server for any client IP and in the port 8000
