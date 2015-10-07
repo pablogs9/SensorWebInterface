@@ -16,12 +16,13 @@
     <div id="dataChart"></div>
 
     <h1>Data table example</h1>
+    <a href="/csvData"> Download all data in CSV format </a>
     <table id="dataTable" style="width:100%">
         <tr>
-            <td>Time</td>
-            <td>Period</td>
-            <td>Frequency</td>
-            <td>Pulses</td>
+                <td><b>Time</b></td>
+                <td><b>Period</b></td>
+                <td><b>Frequency</b></td>
+                <td><b>Pulses</b></td>
         </tr>
     </table>
 </body>
@@ -66,11 +67,11 @@ $(document).ready(function(){
             $(".data").remove();
             for(var i = 1;i<data["columns"][0].length;i++){
                 $('#dataTable tr:last').after(  '<tr class="data">' +
-                                                    '<td>' + data["columns"][0][i] + '</td>' +
-                                                    '<td>' + data["columns"][1][i] + '</td>' +
-                                                    '<td>' + data["columns"][2][i] + '</td>' +
-                                                    '<td>' + data["columns"][3][i] + '</td>' +
-                                                '</tr>');
+                '<td>' + data["columns"][0][i] + '</td>' +
+                '<td>' + data["columns"][1][i] + '</td>' +
+                '<td>' + data["columns"][2][i] + '</td>' +
+                '<td>' + data["columns"][3][i] + '</td>' +
+                '</tr>');
             }
             console.log(data["columns"]);
 
