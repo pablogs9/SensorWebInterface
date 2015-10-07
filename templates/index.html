@@ -14,47 +14,68 @@
     <h1> Data representation example</h1>
     <!-- Preparing a div where C3.js will work -->
     <div id="dataChart"></div>
+
+    <h1>Data table example</h1>
+    <table id="dataTable" style="width:100%">
+        <tr>
+            <td>Time</td>
+            <td>Period</td>
+            <td>Frequency</td>
+            <td>Pulses</td>
+        </tr>
+    </table>
 </body>
 
 <script>
-    $(document).ready(function(){
+$(document).ready(function(){
 
-        //Generating a new chart
-        var chart = c3.generate({
-            //Putting it in our div
-            bindto: '#dataChart',
-            transition: {
-                duration: 0
-            },
-            //Axis, data and formats
-            data: {
-                x: 'timestamp',
-                xFormat: '%H:%M:%S.%L', // 'xFormat' can be used as custom format of 'x'
-                columns: [
-                    ['timestamp'],
-                    ['Period'],
-                    ['Frequency'],
-                    ['Pulses']
-                ]
-            },
-            axis: {
-                x: {
-                    type: 'timeseries',
-                    tick: {
-                        format: '%H:%M:%S.%L'
-                    }
+    //Generating a new chart
+    var chart = c3.generate({
+        //Putting it in our div
+        bindto: '#dataChart',
+        transition: {
+            duration: 0
+        },
+        //Axis, data and formats
+        data: {
+            x: 'timestamp',
+            xFormat: '%H:%M:%S.%L', // 'xFormat' can be used as custom format of 'x'
+            columns: [
+                ['timestamp'],
+                ['Period'],
+                ['Frequency'],
+                ['Pulses']
+            ]
+        },
+        axis: {
+            x: {
+                type: 'timeseries',
+                tick: {
+                    format: '%H:%M:%S.%L'
                 }
             }
-        });
-
-        //Schedule a job every 100ms where the jQuery GET command is executed
-        setInterval(function () {
-            //Recover the JSON information of the last 100 samples and reload
-            //the chart with them
-            $.get( "chartData/100", function( data ) {
-                chart.load( data );
-            });
-        },100);
+        }
     });
+
+    //Schedule a job every 100ms where the jQuery GET command is executed
+    setInterval(function () {
+        //Recover the JSON information of the last 100 samples and reload
+        //the chart with them
+        $.get( "chartData/100", function( data ) {
+            chart.load( data );
+            $(".data").remove();
+            for(var i = 1;i<data["columns"][0].length;i++){
+                $('#dataTable tr:last').after(  '<tr class="data">' +
+                                                    '<td>' + data["columns"][0][i] + '</td>' +
+                                                    '<td>' + data["columns"][1][i] + '</td>' +
+                                                    '<td>' + data["columns"][2][i] + '</td>' +
+                                                    '<td>' + data["columns"][3][i] + '</td>' +
+                                                '</tr>');
+            }
+            console.log(data["columns"]);
+
+        });
+    },100);
+});
 
 </script>
