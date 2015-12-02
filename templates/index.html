@@ -5,9 +5,11 @@
     <script src="/static/jquery.js"></script>
     <!-- Load c3.css -->
     <link href="/static/c3.css" rel="stylesheet" type="text/css">
+
     <!-- Load d3.js and c3.js -->
     <script src="/static/d3.js" charset="utf-8"></script>
     <script src="/static/c3.js"></script>
+
 </head>
 
 <body>
@@ -19,63 +21,62 @@
     <a href="/csvData"> Download all data in CSV format </a>
     <table id="dataTable" style="width:100%">
         <tr>
-                <td><b>Time</b></td>
-                <td><b>Period</b></td>
-                <td><b>Frequency</b></td>
-                <td><b>Pulses</b></td>
+            <td><b>Time</b></td>
+            <td><b>Period</b></td>
+            <td><b>Frequency</b></td>
+            <td><b>Pulses</b></td>
         </tr>
     </table>
 </body>
 
 <script>
-$(document).ready(function(){
+    $(document).ready(function() {
 
-    //Generating a new chart
-    var chart = c3.generate({
-        //Putting it in our div
-        bindto: '#dataChart',
-        transition: {
-            duration: 0
-        },
-        //Axis, data and formats
-        data: {
-            x: 'timestamp',
-            type: 'spline',
-            xFormat: '%H:%M:%S.%L', // 'xFormat' can be used as custom format of 'x'
-            columns: [
-                ['timestamp'],
-                ['Period'],
-                ['Frequency'],
-                ['Pulses']
-            ]
-        },
-        axis: {
-            x: {
-                type: 'timeseries',
-                tick: {
-                    format: '%H:%M:%S.%L'
+        //Generating a new chart
+        var chart = c3.generate({
+            //Putting it in our div
+            bindto: '#dataChart',
+            transition: {
+                duration: 0
+            },
+            //Axis, data and formats
+            data: {
+                x: 'timestamp',
+                type: 'spline',
+                xFormat: '%H:%M:%S.%L', // 'xFormat' can be used as custom format of 'x'
+                columns: [
+                    ['timestamp'],
+                    ['Period'],
+                    ['Frequency'],
+                    ['Pulses']
+                ]
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%H:%M:%S.%L'
+                    }
                 }
             }
-        }
-    });
-
-    //Schedule a job every 100ms where the jQuery GET command is executed
-    setInterval(function () {
-        //Recover the JSON information of the last 100 samples and reload
-        //the chart with them
-        $.get( "chartData/100", function( data ) {
-            chart.load( data );
-            $(".data").remove();
-            for(var i = 1;i<data["columns"][0].length;i++){
-                $('#dataTable tr:last').after(  '<tr class="data">' +
-                '<td>' + data["columns"][0][i] + '</td>' +
-                '<td>' + data["columns"][1][i] + '</td>' +
-                '<td>' + data["columns"][2][i] + '</td>' +
-                '<td>' + data["columns"][3][i] + '</td>' +
-                '</tr>');
-            }
         });
-    },100);
-});
 
+        //Schedule a job every 100ms where the jQuery GET command is executed
+        setInterval(function() {
+            //Recover the JSON information of the last 100 samples and reload
+            //the chart with them
+            $.get("chartData/100", function(data) {
+                chart.load(data);
+                $(".data").remove();
+                for (var i = 1; i < data["columns"][0].length; i++) {
+                    $('#dataTable tr:last').after('<tr class="data">' +
+                        '<td>' + data["columns"][0][i] + '</td>' +
+                        '<td>' + data["columns"][1][i] + '</td>' +
+                        '<td>' + data["columns"][2][i] + '</td>' +
+                        '<td>' + data["columns"][3][i] + '</td>' +
+                        '</tr>');
+                }
+            });
+        }, 100);
+    });
 </script>
